@@ -105,7 +105,7 @@ class NewtonCradle():
 
 
     def mediana(self, n):
-        #Encontrar la posición central para una secuencia de n números
+        #Encontrar a posição central para una sequência de n números
         if(n%2 == 0):
             return n/2
         else:
@@ -218,7 +218,7 @@ class NewtonCradle():
         
         glColor3f(0.069, 0.069, 0.069)
         
-        #Iluminación
+        #Iluminacao
         mat_ambient = [0.0, 0.0, 0.0, 0.0]
         mat_diffuse = [0.5, 0.5, 0.5, 1.0]    
         mat_specular =  [1.0, 1.0, 1.0, 1.0]
@@ -228,7 +228,7 @@ class NewtonCradle():
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
         #glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess)
         
-        #Superior Delantero
+        #Superior Dianteiro
         glPushMatrix()
         glTranslatef(-self.tub_tamX/2, self.tub_tamY/2-self.tub_radio, self.tub_tamZ/2-self.tub_radio)
         glRotatef(90.0, 0.0, 1.0, 0.0)
@@ -242,28 +242,28 @@ class NewtonCradle():
         gluCylinder(self.quadratic,self.tub_radio,self.tub_radio,self.tub_tamX,self.slices, self.stacks)
         glPopMatrix()
         
-        #Izquierdo Delantero
+        #Esquerdo Dianteiro
         glPushMatrix()
         glTranslatef(-(self.tub_tamX/2-self.tub_radio), self.tub_tamY/2-self.tub_radio, self.tub_tamZ/2-self.tub_radio)
         glRotatef(90.0, 1.0, 0.0, 0.0)
         gluCylinder(self.quadratic,self.tub_radio,self.tub_radio,self.tub_tamY-self.tub_radio,self.slices, self.stacks)
         glPopMatrix()
         
-        #Izquierdo Posterior
+        #Esquerdo Posterior
         glPushMatrix()
         glTranslatef(-(self.tub_tamX/2-self.tub_radio), self.tub_tamY/2-self.tub_radio, -(self.tub_tamZ/2-self.tub_radio))
         glRotatef(90.0, 1.0, 0.0, 0.0)
         gluCylinder(self.quadratic,self.tub_radio,self.tub_radio,self.tub_tamY-self.tub_radio,self.slices, self.stacks)
         glPopMatrix()
         
-        #Derecho Delantero
+        #Direito Dianteiro
         glPushMatrix()
         glTranslatef((self.tub_tamX/2-self.tub_radio), self.tub_tamY/2-self.tub_radio, self.tub_tamZ/2-self.tub_radio)
         glRotatef(90.0, 1.0, 0.0, 0.0)
         gluCylinder(self.quadratic,self.tub_radio,self.tub_radio,self.tub_tamY-self.tub_radio,self.slices, self.stacks)
         glPopMatrix()
         
-        #Derecho Posterior
+        #Direito Posterior
         glPushMatrix()
         glTranslatef((self.tub_tamX/2-self.tub_radio), self.tub_tamY/2-self.tub_radio, -(self.tub_tamZ/2-self.tub_radio))
         glRotatef(90.0, 1.0, 0.0, 0.0)
@@ -423,7 +423,7 @@ class NewtonCradle():
         if (m==0):
             exit(0)
         elif (m==1):
-            drawAxes =  not drawAxes
+            self.drawAxes =  not self.drawAxes
         
 
     def handleMenuTotalEsf(self, m):
@@ -456,10 +456,10 @@ class NewtonCradle():
         glutAddMenuEntry("7", 27)
         
         menuPrincipal = glutCreateMenu(self.handleMenuPrincipal)
-        glutAddSubMenu("Total de self.esferas", menuTotalEsf)
-        glutAddSubMenu("En Movimiento", menuEnMovimiento)
-        glutAddMenuEntry("Mostrar Ejes", 1)
-        glutAddMenuEntry("Salir", 0)
+        glutAddSubMenu("Total de esferas", menuTotalEsf)
+        glutAddSubMenu("Em Movimiento", menuEnMovimiento)
+        glutAddMenuEntry("Mostrar Eixos", 1)
+        glutAddMenuEntry("Sair", 0)
         glutAttachMenu(GLUT_RIGHT_BUTTON)
 
 
