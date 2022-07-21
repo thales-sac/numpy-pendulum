@@ -14,12 +14,9 @@ class NewtonCradle():
         self.textureId = None
 
         ###CONSTANTES
-        self.quadratic = None   #Necesario para desenhar cilindros con glu
-        #GLuint _textureId          #The OpenGL id of the texture
-        #textureId = glGenTextures(1)
-
+        
         self.milisegundos = 20      #Tempo para cada atualização da tela
-        self.angulomax = 50       #Valor máximo para o ângulo do pêndulo
+        self.angulomax = 89    #Valor máximo para o ângulo do pêndulo
         self.incrementomax = 6.5  #Valor máximo para os incrementos do ângulo
         self.angulo = -self.angulomax  #A esfera mais a esquerda começa suspensa pelo maior ângulo
         self.clockwise = False     #Esfera tem transalação no sentido anti-horário 
@@ -46,9 +43,9 @@ class NewtonCradle():
         self.tub_tamZ = 4.5       # o diâmetro de cada tubo)
 
 
-        #A largura do fio se calcula com base no tamanho dos tubos, 
+        #O comprimento do fio se calcula com base no tamanho dos tubos, 
         # o diâmetro das esferas e a distancia entre as esferas e a base
-        self.largura_fio = self.tub_tamY - self.tub_radio - self.dist_esf_base - self.esf_diam - self.cuboamarrar/2
+        self.comprimento_fio = self.tub_tamY - self.tub_radio - self.dist_esf_base - self.esf_diam - self.cuboamarrar/2
 
         #Camara - define perspectiva padrão de visualização
         self.camposx = 0.0
@@ -60,9 +57,12 @@ class NewtonCradle():
 
         #Eixos
         self.drawAxes = False
+        
+        self.quadratic = None   #Necesario para desenhar cilindros con glu
+        #GLuint _textureId          #The OpenGL id of the texture
+        #textureId = glGenTextures(1)
 
-    #Menus
-    #static int menuPrincipal, menuTotalEsf, menuEnMovimiento
+   
 
     def loadTexture(self, img):
         textureId = glGenTextures(1)
@@ -123,17 +123,17 @@ class NewtonCradle():
 
     def drawBase(self): 
         glPushMatrix()
-        glTranslatef(0.0, -(self.esf_diam/2 + self.dist_esf_base + self.base_tamY/2), 0.0) #Centro Geométrico de la Base
+        glTranslatef(0.0, -(self.esf_diam/2 + self.dist_esf_base + self.base_tamY/2), 0.0) #Centro Geométrico da Base
         
         glEnable(GL_TEXTURE_2D)
         #glBindTexture(GL_TEXTURE_2D, self.textureId)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         
-        glColor3f(1.0,1.0,1.0)
+        glColor3f(0.58,0.29,0.29)
         
         glBegin(GL_QUADS)
-        #Cara Superior
+        #Face Superior
         glNormal3f(0.0, 1.0, 0.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(-self.base_tamX/2, self.base_tamY/2, self.base_tamZ/2) #Bottom Left of Texture & Plane
@@ -143,7 +143,7 @@ class NewtonCradle():
         glVertex3f(self.base_tamX/2, self.base_tamY/2, -self.base_tamZ/2) # Top Right of Texture & Plane
         glTexCoord2f(0.0, 1.0) 
         glVertex3f(-self.base_tamX/2, self.base_tamY/2, -self.base_tamZ/2) # Top Left of Texture & Plane
-        #Cara Inferior
+        #Face Inferior
         glNormal3f(0.0, -1.0, 0.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(-self.base_tamX/2, -self.base_tamY/2, self.base_tamZ/2)
@@ -153,7 +153,7 @@ class NewtonCradle():
         glVertex3f(self.base_tamX/2, -self.base_tamY/2, -self.base_tamZ/2)
         glTexCoord2f(0.0, 1.0) 
         glVertex3f(-self.base_tamX/2, -self.base_tamY/2, -self.base_tamZ/2)
-        #Cara Izq
+        #Face Esquerda
         glNormal3f(-1.0, 0.0, 0.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(-self.base_tamX/2, -self.base_tamY/2, -self.base_tamZ/2)
@@ -163,7 +163,7 @@ class NewtonCradle():
         glVertex3f(-self.base_tamX/2, self.base_tamY/2, self.base_tamZ/2)
         glTexCoord2f(0.0, 1.0) 
         glVertex3f(-self.base_tamX/2, self.base_tamY/2, -self.base_tamZ/2)
-        #Cara Der
+        #Face Direita
         glNormal3f(-1.0, 0.0, 0.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(self.base_tamX/2, -self.base_tamY/2, -self.base_tamZ/2)
@@ -173,7 +173,7 @@ class NewtonCradle():
         glVertex3f(self.base_tamX/2, self.base_tamY/2, self.base_tamZ/2)
         glTexCoord2f(0.0, 1.0) 
         glVertex3f(self.base_tamX/2, self.base_tamY/2, -self.base_tamZ/2)
-        #Cara Frontal
+        #Face Frontal
         glNormal3f(0.0, 0.0, 1.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(-self.base_tamX/2, -self.base_tamY/2, self.base_tamZ/2) 
@@ -183,7 +183,7 @@ class NewtonCradle():
         glVertex3f(self.base_tamX/2, self.base_tamY/2, self.base_tamZ/2)
         glTexCoord2f(0.0, 1.0) 
         glVertex3f(-self.base_tamX/2, self.base_tamY/2, self.base_tamZ/2)
-        #Cara Posterior
+        #Face Posterior
         glNormal3f(0.0, 0.0, 1.0)
         glTexCoord2f(0.0, 0.0) 
         glVertex3f(-self.base_tamX/2, -self.base_tamY/2, -self.base_tamZ/2) 
@@ -202,13 +202,13 @@ class NewtonCradle():
         glPushMatrix()
         glTranslatef(0.0, self.tub_tamY/2 - self.esf_diam/2 - self.dist_esf_base, 0.0) #Centro Geométrico
         
-        glColor3f(0.069, 0.069, 0.069)
+        glColor3f(0.66, 0.66, 0.66)
         
         #Iluminacao
         mat_ambient = [0.0, 0.0, 0.0, 0.0]
         mat_diffuse = [0.5, 0.5, 0.5, 1.0]    
         mat_specular =  [1.0, 1.0, 1.0, 1.0]
-        mat_shininess = [300.0 ]
+        mat_shininess = [300.0]
         glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient)
         glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse)
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
@@ -263,7 +263,7 @@ class NewtonCradle():
         glPushMatrix()
         
         glRotatef(angulo, 0.0, 0.0, 1.0)
-        glTranslatef(0.0, -self.largura_fio, 0.0)
+        glTranslatef(0.0, -self.comprimento_fio, 0.0)
         
         glColor3f(0.8, 0.8, 0.8)
         
@@ -289,8 +289,8 @@ class NewtonCradle():
         glRotatef(-angulo, 0.0, 0.0, 1.0)
         
         #Desenhar fios
-        distX = math.sin(self.toRad(angulo))*self.largura_fio
-        distY = math.cos(self.toRad(angulo))*self.largura_fio
+        distX = math.sin(self.toRad(angulo))*self.comprimento_fio
+        distY = math.cos(self.toRad(angulo))*self.comprimento_fio
         distZ = self.tub_tamZ/2-self.tub_radio
         
         glColor3f(0.72, 0.54, 0.0)
@@ -330,7 +330,7 @@ class NewtonCradle():
         
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        
+               
         #Iluminacao
         ambientLight = [0.1, 0.1, 0.1, 1.0]
         diffuseLight = [1.0, 1.0, 1.0, 1.0]
@@ -340,7 +340,7 @@ class NewtonCradle():
         glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight)
         glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight)
-        
+                
         # Viewing 
         self.posicionarCamara()
         
@@ -356,15 +356,14 @@ class NewtonCradle():
 
     def update(self, value): 
         
-        incremento = self.incrementomax-abs(self.angulo)/self.angulomax*self.incrementomax*0.85
+        incremento = math.sqrt(math.cos(self.toRad(self.angulo)))*1.6
         
         if(self.clockwise and self.angulo <=-self.angulomax):
             self.clockwise = False
         
         elif(not self.clockwise and self.angulo >= self.angulomax): 
             self.clockwise = True
-        
-        
+                
         if(self.clockwise):
             self.angulo -= incremento
         else:
@@ -372,6 +371,27 @@ class NewtonCradle():
             
         glutPostRedisplay()
         glutTimerFunc(self.milisegundos, self.update, 0)
+        
+    
+    def handleKeyboardKeys(self, key, x, y):
+        
+        inc = 3
+        
+        ch = key.decode("utf-8")
+        
+        if (ch == '-'):
+            self.milisegundos += inc
+            glutPostRedisplay()
+        
+        elif (ch == '+'):
+            if (self.milisegundos - inc > 0):
+                self.milisegundos -= inc
+            else:
+                inc -= 1
+            glutPostRedisplay()
+        
+        
+        return
 
 
     def handleSpecialKeys (self, key, x, y): 
@@ -392,6 +412,7 @@ class NewtonCradle():
         elif (key==GLUT_KEY_DOWN):
             self.camrotx += inc 
             glutPostRedisplay()
+        
         
         
     def handleResize(self, w, h): 
@@ -420,8 +441,7 @@ class NewtonCradle():
     def handleMenuEmMovimiento(self, m):
         self.is_moving = m-20
         glutPostRedisplay()
-
-
+    
     def prepararMenu(self): 
         menuTotalEsf = glutCreateMenu(self.handleMenuTotalEsf)
         glutAddMenuEntry("1", 11)
@@ -467,6 +487,7 @@ class NewtonCradle():
         glutDisplayFunc(self.drawScene)
         glutReshapeFunc(self.handleResize)
         glutSpecialFunc(self.handleSpecialKeys)
+        glutKeyboardFunc(self.handleKeyboardKeys)
         glutTimerFunc(self.milisegundos, self.update, 0)
 
         glutMainLoop()
