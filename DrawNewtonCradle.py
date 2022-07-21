@@ -6,10 +6,9 @@ from PIL import Image
 import argparse
 import numpy as np
 import math
-
-
-class NewtonCradle():
     
+class DrawNewtonCradle():
+        
     def __init__(self):
         self.textureId = None
 
@@ -17,12 +16,8 @@ class NewtonCradle():
         self.quadratic = None   #Necesario para desenhar cilindros con glu
         #GLuint _textureId          #The OpenGL id of the texture
         #textureId = glGenTextures(1)
-
-        self.milisegundos = 20      #Tempo para cada atualização da tela
-        self.angulomax = 50       #Valor máximo para o ângulo do pêndulo
-        self.incrementomax = 6.5  #Valor máximo para os incrementos do ângulo
+        self.angulomax = 50   
         self.angulo = -self.angulomax  #A esfera mais a esquerda começa suspensa pelo maior ângulo
-        self.clockwise = False     #Esfera tem transalação no sentido anti-horário 
 
         self.esferas = 5            #Quantidade de esferas
         self.is_moving = 1           #Quantidade de esferas em movimento
@@ -44,12 +39,7 @@ class NewtonCradle():
         self.tub_tamX = 6.5       # Tamanhoo da haste retangular 
         self.tub_tamY = 5      # formada por tudos (incluindo
         self.tub_tamZ = 4.5       # o diâmetro de cada tubo)
-
-
-        #A largura do fio se calcula com base no tamanho dos tubos, 
-        # o diâmetro das esferas e a distancia entre as esferas e a base
-        self.largura_fio = self.tub_tamY - self.tub_radio - self.dist_esf_base - self.esf_diam - self.cuboamarrar/2
-
+        
         #Camara - define perspectiva padrão de visualização
         self.camposx = 0.0
         self.camposy = 0.5
@@ -57,13 +47,15 @@ class NewtonCradle():
         self.camrotx = 6.0
         self.camroty = 40.0
         self.camrotz = 0.0
-
+        
         #Eixos
         self.drawAxes = False
 
-    #Menus
-    #static int menuPrincipal, menuTotalEsf, menuEnMovimiento
+        #A largura do fio se calcula com base no tamanho dos tubos, 
+        # o diâmetro das esferas e a distancia entre as esferas e a base
+        self.largura_fio = self.tub_tamY - self.tub_radio - self.dist_esf_base - self.esf_diam - self.cuboamarrar/2
 
+    
     def loadTexture(self, img):
         textureId = glGenTextures(1)
         img_data = np.array(list(img.getdata()), np.int8)
@@ -88,16 +80,13 @@ class NewtonCradle():
         #self.textureId = self.loadTexture(image)
         return
 
-    def posicionarCamara(self): 
-        glTranslatef(-self.camposx, -self.camposy, -self.camposz)
-        glRotatef(self.camrotx, 1.0, 0.0, 0.0)
-        glRotatef(self.camroty, 0.0, 1.0, 0.0)
-        glRotatef(self.camrotz, 0.0, 0.0, 1.0)
-
+    
+    def toDeg(self, radian):
+        return radian*180/math.pi
 
     def toRad(self, degree): 
         return degree*math.pi/180
-
+    
     def defineAxes(self):
         #Eixo X - vermelho
         glColor3f(1.0, 0.0, 0.0)
@@ -323,7 +312,13 @@ class NewtonCradle():
 
         glPopMatrix()
 
-
+    def posicionarCamara(self): 
+        glTranslatef(-self.camposx, -self.camposy, -self.camposz)
+        glRotatef(self.camrotx, 1.0, 0.0, 0.0)
+        glRotatef(self.camroty, 0.0, 1.0, 0.0)
+        glRotatef(self.camrotz, 0.0, 0.0, 1.0)
+    
+    
     def drawScene(self): 
         glClearColor(0.0,0.0,0.0,1.0) #COR DO FUNDO (preto)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -352,126 +347,3 @@ class NewtonCradle():
         self.drawEsferas()
 
         glutSwapBuffers()
-        
-
-    def update(self, value): 
-        
-        incremento = self.incrementomax-abs(self.angulo)/self.angulomax*self.incrementomax*0.85
-        
-        if(self.clockwise and self.angulo <=-self.angulomax):
-            self.clockwise = False
-        
-        elif(not self.clockwise and self.angulo >= self.angulomax): 
-            self.clockwise = True
-        
-        
-        if(self.clockwise):
-            self.angulo -= incremento
-        else:
-            self.angulo += incremento
-            
-        glutPostRedisplay()
-        glutTimerFunc(self.milisegundos, self.update, 0)
-
-
-    def handleSpecialKeys (self, key, x, y): 
-        inc = 2.0
-        
-        if (key==GLUT_KEY_RIGHT):
-            self.camroty += inc
-            glutPostRedisplay()
-        
-        elif (key==GLUT_KEY_LEFT):
-            self.camroty -= inc
-            glutPostRedisplay()
-        
-        elif (key==GLUT_KEY_UP):
-            self.camrotx -= inc 
-            glutPostRedisplay()
-        
-        elif (key==GLUT_KEY_DOWN):
-            self.camrotx += inc 
-            glutPostRedisplay()
-        
-        
-    def handleResize(self, w, h): 
-        #Projection 
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluPerspective(45.0, float(w) / float(h), 1.0, 200.0)
-        
-        # ViewPort 
-        glViewport(0, 0, w, h)
-
-
-    def handleMenuPrincipal(self, m):
-        
-        if (m==0):
-            exit(0)
-        elif (m==1):
-            self.drawAxes =  not self.drawAxes
-        
-
-    def handleMenuTotalEsf(self, m):
-        self.esferas = m-10
-        glutPostRedisplay()
-
-
-    def handleMenuEmMovimiento(self, m):
-        self.is_moving = m-20
-        glutPostRedisplay()
-
-
-    def prepararMenu(self): 
-        menuTotalEsf = glutCreateMenu(self.handleMenuTotalEsf)
-        glutAddMenuEntry("1", 11)
-        glutAddMenuEntry("2", 12)
-        glutAddMenuEntry("3", 13)
-        glutAddMenuEntry("4", 14)
-        glutAddMenuEntry("5", 15)
-        glutAddMenuEntry("6", 16)
-        glutAddMenuEntry("7", 17)
-        
-        menuEnMovimiento = glutCreateMenu(self.handleMenuEmMovimiento)
-        glutAddMenuEntry("1", 21)
-        glutAddMenuEntry("2", 22)
-        glutAddMenuEntry("3", 23)
-        glutAddMenuEntry("4", 24)
-        glutAddMenuEntry("5", 25)
-        glutAddMenuEntry("6", 26)
-        glutAddMenuEntry("7", 27)
-        
-        menuPrincipal = glutCreateMenu(self.handleMenuPrincipal)
-        glutAddSubMenu("Total de esferas", menuTotalEsf)
-        glutAddSubMenu("Em Movimiento", menuEnMovimiento)
-        glutAddMenuEntry("Mostrar Eixos", 1)
-        glutAddMenuEntry("Sair", 0)
-        glutAttachMenu(GLUT_RIGHT_BUTTON)
-
-
-    def main(self):
-        # parse args
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-t", "--track", action="store_true")
-        args = parser.parse_args()
-        # set up the GLUT window
-        glutInit(sys.argv)
-
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-        glutInitWindowSize(800, 600)
-        
-        glutCreateWindow("EP2 - Computacao Grafica - Pendulo de Newton")
-        self.initRendering()
-        self.prepararMenu()
-        
-        glutDisplayFunc(self.drawScene)
-        glutReshapeFunc(self.handleResize)
-        glutSpecialFunc(self.handleSpecialKeys)
-        glutTimerFunc(self.milisegundos, self.update, 0)
-
-        glutMainLoop()
-        return 0
-
-
-newtoncradle = NewtonCradle()
-newtoncradle.main()
