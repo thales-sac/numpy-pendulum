@@ -14,9 +14,6 @@ class NewtonCradle():
         self.textureId = None
 
         ###CONSTANTES
-
-        self.PI = math.pi
-
         self.quadratic = None   #Necesario para desenhar cilindros con glu
         #GLuint _textureId          #The OpenGL id of the texture
         #textureId = glGenTextures(1)
@@ -98,10 +95,10 @@ class NewtonCradle():
         glRotatef(self.camrotz, 0.0, 0.0, 1.0)
 
     def toDeg(self, radian):
-        return radian*180/self.PI
+        return radian*180/math.pi
 
     def toRad(self, degree): 
-        return degree*self.PI/180
+        return degree*math.pi/180
 
 
     def mediana(self, n):
